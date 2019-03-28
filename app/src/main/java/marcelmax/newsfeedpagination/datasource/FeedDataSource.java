@@ -18,14 +18,10 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
     private static final String TAG = FeedDataSource.class.getSimpleName();
     private static final int FIRST_PAGE = 1; //we will start from the first page which is 1
 
-    public static final int PAGE_SIZE = 50;//the size of a page that we want
-
-    public Context context;
 
     public Call<FeedDBResponse> getArticleResponse(String query, String language, int page, int pagesize) {
         return RetrofitInstance.fetchFeedApi().
-                fetchFeeds(Constants.API_KEY,query,language,page,pagesize);
-                //fetchFeeds(Constants.API_KEY,Constants.QUERY,Constants.LANGUAGE_DE,page,pagesize);
+                fetchFeeds(Constants.API_KEY, query, language, page, pagesize);
     }
 
 
@@ -42,31 +38,31 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
         getArticleResponse(Constants.QUERY,
                 Constants.LANGUAGE_EN,
                 FIRST_PAGE,
-                PAGE_SIZE)
+                params.requestedLoadSize)
                 .enqueue(new Callback<FeedDBResponse>() {
 
-            @Override
-            public void onResponse(Call<FeedDBResponse> call,
-                                   Response<FeedDBResponse> response) {
+                    @Override
+                    public void onResponse(Call<FeedDBResponse> call,
+                                           Response<FeedDBResponse> response) {
 
-                if (response.body() != null) {
-                    Log.v(TAG,"INITIAL" + response.body().getTotalResults().toString());
-                    callback.onResult(response.body()
-                            .getArticles(),
-                            null,
-                            FIRST_PAGE+1);
-                }
+                        if (response.body() != null) {
+                            Log.v(TAG, "INITIAL" + response.body().getTotalResults().toString());
+                            callback.onResult(response.body()
+                                            .getArticles(),
+                                    null,
+                                    FIRST_PAGE + 1);
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onFailure(Call<FeedDBResponse> call, Throwable t) {
-                Log.v("***ONFAIL", "ONFAIL CALL IS EXECUTED:\n " + call.isExecuted()
-                        + "\n CALL REQUEST " + call.request()
-                        + "\n THROWABLE " + t);
-            }
+                    @Override
+                    public void onFailure(Call<FeedDBResponse> call, Throwable t) {
+                        Log.v("***ONFAIL", "ONFAIL CALL IS EXECUTED:\n " + call.isExecuted()
+                                + "\n CALL REQUEST " + call.request()
+                                + "\n THROWABLE " + t);
+                    }
 
-        });
+                });
     }
 
     @Override
@@ -115,81 +111,39 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
         getArticleResponse(Constants.QUERY,
                 Constants.LANGUAGE_EN,
                 params.key,
-                PAGE_SIZE)
+                params.requestedLoadSize)
                 .enqueue(new Callback<FeedDBResponse>() {
 
-            @Override
-            public void onResponse(Call<FeedDBResponse> call,
-                                   Response<FeedDBResponse> response) {
-                if (response.body() != null) {
-                    /**
-                     * If the request is successful, then we will update the callback
-                     * with the latest feed items and
-                     * "params.key+1" -> set the next key for the next iteration.
-                     */
-                    int nextKey = (params.key == response.body().getTotalResults())? null : params.key+1;
+                    @Override
+                    public void onResponse(Call<FeedDBResponse> call,
+                                           Response<FeedDBResponse> response) {
+                        if (response.body() != null) {
+                            /**
+                             * If the request is successful, then we will update the callback
+                             * with the latest feed items and
+                             * "params.key+1" -> set the next key for the next iteration.
+                             */
+                            int nextKey = (params.key == response.body().getTotalResults()) ? null : params.key + 1;
 
-                    callback.onResult(response.body()
-                                    .getArticles(),
+                            callback.onResult(response.body()
+                                            .getArticles(),
                                     nextKey);
-                    Log.v(TAG,"AFTER " + params.key + ", " + nextKey);
+                            Log.v(TAG, "AFTER " + params.key + ", " + nextKey);
 
-                    Log.v(TAG,"AFTER BODY " + response.body().getTotalResults().toString());
+                            Log.v(TAG, "AFTER BODY " + response.body().getTotalResults().toString());
 
-                }
-
-                Log.v(TAG,"AFTER" + params.key);
-
-            }
-
-            @Override
-            public void onFailure(Call<FeedDBResponse> call, Throwable t) {
-                Log.v("***ONFAIL", "ONFAIL CALL IS EXECUTED:\n " + call.isExecuted()
-                        + "\n CALL REQUEST " + call.request()
-                        + "\n THROWABLE " + t);
-            }
-
-        });
-
-        }
-}
-
-/*
-    public LiveData<List<Article>> getArticles() {
-
-        final MutableLiveData<List<Article>> data = new MutableLiveData<>();
-        final ArrayList<Article> articles = new ArrayList<>();
-
-
-        // make the retrofit call
-        getArticleResponse().enqueue(new Callback<FeedDBResponse>() {
-
-            @Override
-            public void onResponse(Call<FeedDBResponse> call, Response<FeedDBResponse> response) {
-                if (response.body() != null) {
-
-                    for (Article article : response.body().getArticles()) {
-                        articles.add(article);
+                        }
 
                     }
-                    data.setValue(articles);
-                }
 
-            }
+                    @Override
+                    public void onFailure(Call<FeedDBResponse> call, Throwable t) {
+                        Log.v("***ONFAIL", "ONFAIL CALL IS EXECUTED:\n " + call.isExecuted()
+                                + "\n CALL REQUEST " + call.request()
+                                + "\n THROWABLE " + t);
+                    }
 
-            @Override
-            public void onFailure(Call<FeedDBResponse> call, Throwable t) {
-                Log.v("***ONFAIL", "ONFAIL CALL IS EXECUTED:\n " + call.isExecuted()
-                        + "\n CALL REQUEST " + call.request()
-                        + "\n THROWABLE " + t);
-                data.setValue(null);
-            }
+                });
 
-        });
-
-        Log.v("", "PRODUCTS " + articles);
-        Log.v("", "DATA " + data.getValue());
-
-        return data;
     }
-*/
+}

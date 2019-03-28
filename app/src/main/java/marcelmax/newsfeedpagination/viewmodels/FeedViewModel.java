@@ -8,36 +8,26 @@ import android.arch.paging.PagedList;
 
 import marcelmax.newsfeedpagination.model.Article;
 import marcelmax.newsfeedpagination.datasource.factory.FeedDataFactory;
+import marcelmax.newsfeedpagination.repository.NewsRepository;
 
 public class FeedViewModel extends ViewModel {
-    private LiveData<PagedList<Article>> articlePagedList;
-    private LiveData<PageKeyedDataSource<Integer, Article>> liveDataSource;
-
-    //todo maybe add a repository
-    //todo fragment -> viewmodel -> repo -> datasource
+    private LiveData<PagedList<Article>> mArticlePagedList;
+    private NewsRepository mNewsRepository;
 
 
     public FeedViewModel() {
-        init();
+     init();
     }
 
-
     private void init() {
-        FeedDataFactory feedDataFactory = new FeedDataFactory();
-        liveDataSource = feedDataFactory.getArticleLiveDataSource();
+        if (this.mArticlePagedList == null){
+            mNewsRepository = NewsRepository.getInstance();
 
-        PagedList.Config pagedListConfig =
-                (new PagedList.Config.Builder())
-                        .setEnablePlaceholders(false)
-                        .setInitialLoadSizeHint(20)
-                        .setPageSize(20)
-                        .build();
-
-        articlePagedList = (new LivePagedListBuilder(feedDataFactory,pagedListConfig))
-                .build();
+            mArticlePagedList = mNewsRepository.getArticles();
+        }
     }
 
     public LiveData<PagedList<Article>> getArticlePagedList() {
-        return articlePagedList;
+        return mArticlePagedList;
     }
 }
