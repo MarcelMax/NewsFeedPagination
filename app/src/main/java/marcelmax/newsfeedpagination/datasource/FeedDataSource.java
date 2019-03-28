@@ -1,7 +1,7 @@
-package marcelmax.newsfeedpagination.repository;
+package marcelmax.newsfeedpagination.datasource;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.PageKeyedDataSource;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,8 +17,10 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
 
     private static final String TAG = FeedDataSource.class.getSimpleName();
     private static final int FIRST_PAGE = 1; //we will start from the first page which is 1
-    //the size of a page that we want
-    public static final int PAGE_SIZE = 50;
+
+    public static final int PAGE_SIZE = 50;//the size of a page that we want
+
+    public Context context;
 
     public Call<FeedDBResponse> getArticleResponse(String query, String language, int page, int pagesize) {
         return RetrofitInstance.fetchFeedApi().
@@ -38,7 +40,7 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
                             @NonNull final LoadInitialCallback<Integer, Article> callback) {
 
         getArticleResponse(Constants.QUERY,
-                Constants.LANGUAGE_DE,
+                Constants.LANGUAGE_EN,
                 FIRST_PAGE,
                 PAGE_SIZE)
                 .enqueue(new Callback<FeedDBResponse>() {
@@ -49,9 +51,10 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
 
                 if (response.body() != null) {
                     Log.v(TAG,"INITIAL" + response.body().getTotalResults().toString());
-                    callback.onResult(response.body().getArticles(),null,FIRST_PAGE+1);
-
-
+                    callback.onResult(response.body()
+                            .getArticles(),
+                            null,
+                            FIRST_PAGE+1);
                 }
 
             }
@@ -110,7 +113,7 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
         Log.i(TAG, "Loading Rang " + params.key + " Count " + params.requestedLoadSize);
 
         getArticleResponse(Constants.QUERY,
-                Constants.LANGUAGE_DE,
+                Constants.LANGUAGE_EN,
                 params.key,
                 PAGE_SIZE)
                 .enqueue(new Callback<FeedDBResponse>() {
@@ -124,14 +127,18 @@ public class FeedDataSource extends PageKeyedDataSource<Integer, Article> {
                      * with the latest feed items and
                      * "params.key+1" -> set the next key for the next iteration.
                      */
-                    int nextKey = (params.key == response.body()
-                            .getTotalResults())
-                            ? null : params.key+1;
+                    int nextKey = (params.key == response.body().getTotalResults())? null : params.key+1;
 
-                    callback.onResult(response.body().getArticles(), nextKey);
-                    Log.v(TAG,"AFTER" + response.body().getTotalResults().toString());
+                    callback.onResult(response.body()
+                                    .getArticles(),
+                                    nextKey);
+                    Log.v(TAG,"AFTER " + params.key + ", " + nextKey);
+
+                    Log.v(TAG,"AFTER BODY " + response.body().getTotalResults().toString());
 
                 }
+
+                Log.v(TAG,"AFTER" + params.key);
 
             }
 

@@ -7,18 +7,15 @@ import android.arch.paging.PageKeyedDataSource;
 import android.arch.paging.PagedList;
 
 import marcelmax.newsfeedpagination.model.Article;
-import marcelmax.newsfeedpagination.repository.factory.FeedDataFactory;
+import marcelmax.newsfeedpagination.datasource.factory.FeedDataFactory;
 
 public class FeedViewModel extends ViewModel {
     private LiveData<PagedList<Article>> articlePagedList;
     private LiveData<PageKeyedDataSource<Integer, Article>> liveDataSource;
 
-    /*
-    private LiveData<NetworkState> networkState;
-    private LiveData<PagedList<Article>> articleLiveData;
-    private Executor executor;
-    private AppController appController;
-*/
+    //todo maybe add a repository
+    //todo fragment -> viewmodel -> repo -> datasource
+
 
     public FeedViewModel() {
         init();

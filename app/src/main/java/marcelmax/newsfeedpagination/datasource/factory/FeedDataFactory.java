@@ -1,20 +1,15 @@
-package marcelmax.newsfeedpagination.repository.factory;
+package marcelmax.newsfeedpagination.datasource.factory;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;
 import android.arch.paging.PageKeyedDataSource;
 
 import marcelmax.newsfeedpagination.model.Article;
-import marcelmax.newsfeedpagination.repository.FeedDataSource;
+import marcelmax.newsfeedpagination.datasource.FeedDataSource;
 
 public class FeedDataFactory extends DataSource.Factory {
     private MutableLiveData<PageKeyedDataSource<Integer, Article>> articleLiveDataSource;
     private MutableLiveData<FeedDataSource> mutableLiveData;
-
-    public FeedDataFactory() {
-      //  this.mutableLiveData = new MutableLiveData<FeedDataSource>();
-      //  this.articleLiveDataSource = new MutableLiveData<>();
-    }
 
     @Override
     public DataSource create() {
@@ -29,9 +24,6 @@ public class FeedDataFactory extends DataSource.Factory {
         return articleLiveDataSource;
     }
 
-    public MutableLiveData<FeedDataSource> getMutableLiveData() {
-        return mutableLiveData;
-    }
 }
 
 

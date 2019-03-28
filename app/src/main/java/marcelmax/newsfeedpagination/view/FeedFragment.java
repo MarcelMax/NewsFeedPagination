@@ -60,7 +60,7 @@ public class FeedFragment extends Fragment {
 
         mFeedViewModel.getArticlePagedList().observe(getViewLifecycleOwner(), articles -> {
             prepareRecyclerViewMain();
-            mainAdapter.setViewTypeList(articles);
+         //   mainAdapter.setViewTypeList(articles);
             mainAdapter.submitList(articles);
 
         });
