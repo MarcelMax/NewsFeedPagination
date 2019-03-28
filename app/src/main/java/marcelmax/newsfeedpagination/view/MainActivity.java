@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.my_nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this,navController);
         getSupportActionBar().setTitle(R.string.app_name);
+        getSupportActionBar().setSubtitle(R.string.powered_by);
     }
 
     @Override

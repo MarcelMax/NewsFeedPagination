@@ -38,29 +38,8 @@ public class FeedFragment extends Fragment {
     }
 
     private void subscribeObservers() {
-        /*
-        mFeedViewModel.getArticle().observe(getViewLifecycleOwner(), new Observer<List<Article>>() {
-            @Override
-            public void onChanged(@Nullable List<Article> articles) {
-                if (articles != null){
-                    prepareRecyclerViewMain();
-                    mainAdapter.setViewTypeList(articles);
-                    Log.v("","ARTICLES " + articles);
-                }
-            }
-        });
-
-
         mFeedViewModel.getArticlePagedList().observe(getViewLifecycleOwner(), articles -> {
             prepareRecyclerViewMain();
-            mainAdapter.submitList(articles);
-            mainAdapter.setViewTypeList(articles);
-        });
-        */
-
-        mFeedViewModel.getArticlePagedList().observe(getViewLifecycleOwner(), articles -> {
-            prepareRecyclerViewMain();
-         //   mainAdapter.setViewTypeList(articles);
             mainAdapter.submitList(articles);
 
         });

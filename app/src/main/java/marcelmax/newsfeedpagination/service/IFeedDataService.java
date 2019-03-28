@@ -7,11 +7,6 @@ import retrofit2.http.Query;
 
 public interface IFeedDataService {
 
-    @GET("/v2/everything")
-    Call<FeedDBResponse> fetchFeed(@Query("apiKey") String apiKey,
-                                   @Query("q") String q,
-                                   @Query("language") String language);
-
     /**
      *
      * @param apiKey = the API Key

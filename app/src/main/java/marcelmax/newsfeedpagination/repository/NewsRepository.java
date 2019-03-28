@@ -22,11 +22,14 @@ public class NewsRepository {
         return instance;
     }
 
-    private void getFeedDataSource() {
-
-
-       //
-    }
+    /**
+     * Step 1: getting an instance of the DataSourceFactory class
+     * Step 2: We are initializing the network state liveData as well.
+     * This will update the UI on the network changes that take place
+     * Step 3: configure the PagedList.Config.
+     * Step 4: initializing the pageList using the config we created
+     * as well as the DatasourceFactory
+     */
     public LiveData<PagedList<Article>> getArticles() {
         FeedDataFactory feedDataFactory = new FeedDataFactory();
         liveDataSource = feedDataFactory.getArticleLiveDataSource();
@@ -37,9 +40,7 @@ public class NewsRepository {
                         .setInitialLoadSizeHint(20)
                         .setPageSize(20)
                         .build();
-        mArticlePagedList = (new LivePagedListBuilder(feedDataFactory,pagedListConfig)).build();
-
-        return  mArticlePagedList;
+        return mArticlePagedList = (new LivePagedListBuilder(feedDataFactory, pagedListConfig)).build();
     }
 
 

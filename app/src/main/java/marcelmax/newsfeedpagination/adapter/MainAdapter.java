@@ -2,10 +2,12 @@ package marcelmax.newsfeedpagination.adapter;
 
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +19,21 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.navigation.NavController;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import marcelmax.newsfeedpagination.R;
 import marcelmax.newsfeedpagination.model.Article;
 import marcelmax.newsfeedpagination.model.ViewType;
+import marcelmax.newsfeedpagination.view.MainActivity;
+
+import static androidx.navigation.Navigation.findNavController;
 
 public class MainAdapter extends PagedListAdapter<Article, MainAdapter.ArticleViewHolder> {
 
-
     private Context mContext;
+    private Article article;
 
     public MainAdapter(Context context) {
         //super(Article.DIFF_CALLBACK);
@@ -44,8 +51,7 @@ public class MainAdapter extends PagedListAdapter<Article, MainAdapter.ArticleVi
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder viewHolder, int i) {
-
-            Article article = getItem(i);
+            article = getItem(i);
 
             if(article != null){
                 viewHolder.feedTitle.setText(article.getTitle());
@@ -53,8 +59,6 @@ public class MainAdapter extends PagedListAdapter<Article, MainAdapter.ArticleVi
                         .load(article.getUrlToImage())
                         .into(viewHolder.feedImage);
             }
-
-
 
     }
 
@@ -72,7 +76,6 @@ public class MainAdapter extends PagedListAdapter<Article, MainAdapter.ArticleVi
             };
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.tv_feed_title)
         TextView feedTitle;
         @BindView(R.id.img_feed_image)
@@ -82,6 +85,20 @@ public class MainAdapter extends PagedListAdapter<Article, MainAdapter.ArticleVi
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+        @OnClick(R.id.cv_container)
+        public void changeFragment(){
+            Bundle bundle = new Bundle();
+            MainActivity mainActivity = (MainActivity) mContext;
+            final NavController navController = findNavController(mainActivity, R.id.my_nav_host_fragment);
+
+
+                Log.v("********Clicked ", "*****POS. " + getAdapterPosition() + " ARTICLE " + getCurrentList().get(getAdapterPosition()) );
+
+                bundle.putParcelable("pass_article", getCurrentList().get(getAdapterPosition()));
+                navController.navigate(R.id.action_feedFragment_to_feedDetailFragment, bundle);
+
+        }
+
     }
 
 }
